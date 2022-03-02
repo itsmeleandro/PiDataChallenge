@@ -1,0 +1,9 @@
+{
+	"name": "LeandrosFactory",
+	"location": "brazilsouth",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "613d8067-14c6-40ea-9374-aab0ceeece43",
+		"tenantId": "35e9cd03-43d0-4947-b582-a6965c4cb674"
+	}
+}
