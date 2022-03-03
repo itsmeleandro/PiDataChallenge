@@ -21,7 +21,9 @@ pandasDf
 # COMMAND ----------
 
 dfFromLink = spark.createDataFrame(pandasDf) #convierto el dataframe de Pandas en uno de Spark
+newRows=dfFromLink.count()
 display(dfFromLink)
+
 
 # COMMAND ----------
 
@@ -72,15 +74,25 @@ dfToDb.write.jdbc(url=jdbcUrl, table="outPut", mode = "overwrite",properties=con
 
 # COMMAND ----------
 
-
+#guardo la cantidad de filas y fecha para insertar en la tabla de logs
+dfNewLogs=[{ 'cantidadFilas': newRows,
+        'fechaProceso': timestamp,
+        'db': 'leandroserver/PiDB'}
+       ]
+dfNewLogs = spark.createDataFrame(dfNewLogs)
 
 # COMMAND ----------
 
-
+#me traigo los logs de la base de datos
+logs = "(select * from dbo.logs) fromLogs" 
+logs = spark.read.jdbc(url=jdbcUrl, table=logs, properties=connectionProperties)
+display(logs)
 
 # COMMAND ----------
 
-
+#guardo los nuevos logs en la base de datos
+logsToDB = logs.union(dfNewLogs)
+logsToDB.write.jdbc(url=jdbcUrl, table="logs", mode = "overwrite",properties=connectionProperties)
 
 # COMMAND ----------
 
